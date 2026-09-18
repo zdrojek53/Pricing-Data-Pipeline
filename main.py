@@ -12,15 +12,20 @@ def clean_excel(excel_data):
 
     return excel_data
 
+def clean_db(db_data):
+    db_data = db_data.drop(columns=["Dostawca", "Cena_USD", "Cena_PLN", "Cena_EUR"])
+    db_data["Kod_Dostawcy"] = db_data["Kod_Dostawcy"].str.strip()
+
+    return db_data
 
 if __name__ == '__main__':
-    db_df = fetch_db_data()
+    db_df = clean_db(fetch_db_data())
     excel_df = pd.read_excel('pricing_files/cennik_siot.xlsx')
     excel_df = clean_excel(excel_df)
     result_df = db_df.merge(
         excel_df,
-        left_on="Kod",
+        left_on="Kod_Dostawcy",
         right_on="Code",
         how="left"
     )
-    print(result_df.info())
+    print(result_df[result_df.isna().any(axis=1)].to_string())
