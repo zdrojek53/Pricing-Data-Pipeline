@@ -1,0 +1,7 @@
+
+.idea/
+.venv/
+pricing_files/
+.env
+__pycache__/
+*.pyc
