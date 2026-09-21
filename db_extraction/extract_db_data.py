@@ -9,14 +9,14 @@ def fetch_db_data():
     load_dotenv()
 
     connection_url = URL.create(
-        "mssql+pyodbc",
-        host=os.getenv("DB_SERVER"),
-        database=os.getenv("DB_NAME"),
+        'mssql+pyodbc',
+        host=os.getenv('DB_SERVER'),
+        database=os.getenv('DB_NAME'),
         query={
-            "driver": os.getenv("DB_DRIVER", "ODBC Driver 18 for SQL Server"),
-            "trusted_connection": "yes",
-            "Encrypt": "yes",
-            "TrustServerCertificate": "yes"
+            'driver': os.getenv('DB_DRIVER', 'ODBC Driver 18 for SQL Server'),
+            'trusted_connection': 'yes',
+            'Encrypt': 'yes',
+            'TrustServerCertificate': 'yes'
         }
     )
 
@@ -41,6 +41,6 @@ def fetch_db_data():
         return db_df
 
     except Exception as e:
-        print(f"Błąd połączenia z bazą: {e}")
+        print(f'Błąd połączenia z bazą: {e}')
         return None
 
