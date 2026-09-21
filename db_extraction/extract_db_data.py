@@ -27,13 +27,9 @@ def fetch_db_data():
             db_df = pd.read_sql(
                 text("""SELECT
                 TW.Twr_Kod AS [Kod],
-                TW.Twr_KodDostawcy AS [Kod_Dostawcy],
-                K.Knt_Kod AS [Dostawca],
+                TRIM(TW.Twr_KodDostawcy) AS [Kod_Dostawcy],
                 MAX(CASE WHEN TC.TwC_TwCNumer = 2 THEN TC.TwC_Wartosc END) AS [Cena_Cennikowa],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 7 THEN TC.TwC_Wartosc END) AS [Cena_CZK],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 8 THEN TC.TwC_Wartosc END) AS [Cena_USD],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 9 THEN TC.TwC_Wartosc END) AS [Cena_PLN],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 10 THEN TC.TwC_Wartosc END) AS [Cena_EUR]
+                MAX(CASE WHEN TC.TwC_TwCNumer = 7 THEN TC.TwC_Wartosc END) AS [Cena_CZK]
                 FROM CDN.Towary TW
                 LEFT JOIN CDN.TwrCeny TC ON TW.Twr_TwrId = TC.TwC_TwrID
                 LEFT JOIN CDN.Kontrahenci K ON TW.Twr_KntId = K.Knt_KntId
