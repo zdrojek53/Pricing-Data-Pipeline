@@ -6,3 +6,5 @@ pricing_files/
 __pycache__/
 *.pyc
 *.xlsx
+*.yaml
+

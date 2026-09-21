@@ -22,25 +22,20 @@ def fetch_db_data():
 
     engine = create_engine(connection_url)
 
-    try:
-        with engine.connect() as connection:
-            db_df = pd.read_sql(
-                text("""SELECT
-                TW.Twr_Kod AS [Kod],
-                TRIM(TW.Twr_KodDostawcy) AS [Kod_Dostawcy],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 2 THEN TC.TwC_Wartosc END) AS [Cena_Cennikowa],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 7 THEN TC.TwC_Wartosc END) AS [Cena_CZK]
-                FROM CDN.Towary TW
-                LEFT JOIN CDN.TwrCeny TC ON TW.Twr_TwrId = TC.TwC_TwrID
-                LEFT JOIN CDN.Kontrahenci K ON TW.Twr_KntId = K.Knt_KntId
-                WHERE K.Knt_Kod = 'SIOT' AND TW.Twr_KodDostawcy <> ''
-                GROUP BY TW.Twr_Kod, TW.Twr_KodDostawcy, K.Knt_Kod"""),
-                connection
-            )
+    with engine.connect() as connection:
+        db_df = pd.read_sql(
+            text("""SELECT
+            TW.Twr_Kod AS [Kod],
+            TRIM(TW.Twr_KodDostawcy) AS [Kod_Dostawcy],
+            MAX(CASE WHEN TC.TwC_TwCNumer = 2 THEN TC.TwC_Wartosc END) AS [Cena_Cennikowa],
+            MAX(CASE WHEN TC.TwC_TwCNumer = 7 THEN TC.TwC_Wartosc END) AS [Cena_CZK]
+            FROM CDN.Towary TW
+            LEFT JOIN CDN.TwrCeny TC ON TW.Twr_TwrId = TC.TwC_TwrID
+            LEFT JOIN CDN.Kontrahenci K ON TW.Twr_KntId = K.Knt_KntId
+            WHERE K.Knt_Kod = 'SIOT' AND TW.Twr_KodDostawcy <> ''
+            GROUP BY TW.Twr_Kod, TW.Twr_KodDostawcy, K.Knt_Kod"""),
+            connection
+        )
 
-        return db_df
-
-    except Exception as e:
-        print(f'Błąd połączenia z bazą: {e}')
-        return None
+    return db_df
 

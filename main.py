@@ -28,3 +28,5 @@ if __name__ == '__main__':
     result_df['Price_diff'] = (result_df['Net price'] - result_df['Cena_CZK'])/result_df['Cena_CZK'].replace(0, pd.NA)
  
     result_df.to_excel('test.xlsx')
+
+
