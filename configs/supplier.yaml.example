@@ -1,0 +1,11 @@
+supplier_code: 
+file_type: 
+sheet_name: ""
+header_row: 
+
+column_mapping:
+  "Code": 
+  "Title": 
+  "Net price": 
+
+currency: 
