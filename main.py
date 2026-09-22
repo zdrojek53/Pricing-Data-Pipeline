@@ -1,17 +1,14 @@
 import pandas as pd
 from db_extraction.extract_db_data import fetch_db_data
-from pathlib import Path
-import yaml
-from adapters import ConfigAdapter
+from adapters.ConfigAdapter import ConfigAdapter
+from YamlHandler import YamlHandler
 
 
 if __name__ == '__main__':
 
     excel_path = 'pricing_files/cennik_siot.xlsx'
-    yaml_path = Path(__file__).resolve().parent / 'configs' / 'siot.yaml'
-    with open(yaml_path) as f:
-        data = yaml.safe_load(f)
-    config = ConfigAdapter.ConfigAdapter(data)
+
+    config = ConfigAdapter(YamlHandler.data)
 
     db_df = fetch_db_data()
 
@@ -25,7 +22,8 @@ if __name__ == '__main__':
         how='left'
     )
 
-    result_df['price_diff'] = (result_df['price_pricelist'] - result_df['Cena_CZK'])/result_df['Cena_CZK'].replace(0, pd.NA)
+    result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[YamlHandler.currency_key[1]])
+                               /result_df[YamlHandler.currency_key[1]].replace(0, pd.NA))
  
     result_df.to_excel('test.xlsx')
 
