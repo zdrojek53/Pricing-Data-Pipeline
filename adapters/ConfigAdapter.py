@@ -1,12 +1,16 @@
-import yaml
 import pandas as pd
-import MainAdapter
+from adapters.MainAdapter import MainAdapter
 
-class ConfigAdapter(MainAdapter.MainAdapter):
-    supplier_code: str
+class ConfigAdapter(MainAdapter):
+
+    def __init__(self, yaml_data):
+        self.yaml_data = yaml_data
+
 
     def extract(self, path):
-        return pd.read_excel(path, usecols=['Code', 'Net price'])
+        print(self.yaml_data)
+        return pd.read_excel(path, usecols=[self.yaml_data['column_mapping']['code_pricelist']
+                                            , self.yaml_data['column_mapping']['price_pricelist']])
 
     def transform(self, raw):
         raw = (
@@ -18,3 +22,5 @@ class ConfigAdapter(MainAdapter.MainAdapter):
         )
 
         return raw
+
+    
