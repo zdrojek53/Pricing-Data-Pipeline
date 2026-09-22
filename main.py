@@ -14,16 +14,18 @@ if __name__ == '__main__':
     config = ConfigAdapter.ConfigAdapter(data)
 
     db_df = fetch_db_data()
+
     excel_df = config.extract(excel_path)
     excel_df = config.transform(excel_df)
+
     result_df = db_df.merge(
         excel_df,
         left_on='Kod_Dostawcy',
-        right_on='Code',
+        right_on='code_pricelist',
         how='left'
     )
 
-    result_df['Price_diff'] = (result_df['Net price'] - result_df['Cena_CZK'])/result_df['Cena_CZK'].replace(0, pd.NA)
+    result_df['price_diff'] = (result_df['price_pricelist'] - result_df['Cena_CZK'])/result_df['Cena_CZK'].replace(0, pd.NA)
  
     result_df.to_excel('test.xlsx')
 

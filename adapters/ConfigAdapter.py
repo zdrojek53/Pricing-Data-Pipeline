@@ -9,16 +9,16 @@ class ConfigAdapter(MainAdapter):
 
     def extract(self, path):
         print(self.yaml_data)
-        return pd.read_excel(path, usecols=[self.yaml_data['column_mapping']['code_pricelist']
-                                            , self.yaml_data['column_mapping']['price_pricelist']])
+        return (pd.read_excel(path, usecols=lambda col: col in self.yaml_data['column_mapping'])
+                .rename(columns=self.yaml_data['column_mapping']))
 
     def transform(self, raw):
         raw = (
-        raw.dropna(subset=['Code'])
-        .fillna({'Net price': 0})
-        .drop_duplicates(subset=['Code'])
-        .assign(Code = lambda x: x['Code'].astype('str').str.strip())
-        .assign(**{'Net price': (lambda x: x['Net price'].astype('float64'))})
+        raw.dropna(subset=['code_pricelist'])
+        .fillna({'price_pricelist': 0})
+        .drop_duplicates(subset=['code_pricelist'])
+        .assign(code_pricelist = lambda x: x['code_pricelist'].astype('str').str.strip())
+        .assign(price_pricelist = lambda x: x['price_pricelist'].astype('float64'))
         )
 
         return raw
