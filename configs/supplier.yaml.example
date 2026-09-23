@@ -1,11 +1,12 @@
-supplier_code: 
-file_type: 
-sheet_name: ""
-header_row: 
+supplier_code: # for sql query
+file_type: # excel/pdf
+file_path: 
+sheet_name: 
+header_row: # starting from 0
 
 column_mapping:
-  "Code": 
-  "Title": 
-  "Net price": 
+  "": code_pricelist
+  "": name_pricelist
+  "": price_pricelist
 
 currency: 
