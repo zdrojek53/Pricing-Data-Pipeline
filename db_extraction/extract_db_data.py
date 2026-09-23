@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 
 
-def fetch_db_data(supplier_code: str, config):
+def fetch_db_data(supplier_code: str, config) -> pd.DataFrame:
 
     connection_url = URL.create(
         'mssql+pyodbc',
@@ -21,20 +21,23 @@ def fetch_db_data(supplier_code: str, config):
 
     engine = create_engine(connection_url)
 
-    with engine.connect() as connection:
-        query = f"""
-            SELECT
-            TW.Twr_Kod AS [Kod],
-            TRIM(TW.Twr_KodDostawcy) AS [Kod_Dostawcy],
-            MAX(CASE WHEN TC.TwC_TwCNumer = 2 THEN TC.TwC_Wartosc END) AS [Cena_Cennikowa],
-            MAX(CASE WHEN TC.TwC_TwCNumer = {config.currency_key[0]} THEN TC.TwC_Wartosc END) AS [{config.currency_key[1]}]
-            FROM CDN.Towary TW
-            LEFT JOIN CDN.TwrCeny TC ON TW.Twr_TwrId = TC.TwC_TwrID
-            LEFT JOIN CDN.Kontrahenci K ON TW.Twr_KntId = K.Knt_KntId
-            WHERE K.Knt_Kod = 'SIOT' AND TW.Twr_KodDostawcy <> ''
-            GROUP BY TW.Twr_Kod, TW.Twr_KodDostawcy, K.Knt_Kod
-        """
-        db_df = pd.read_sql(query, connection)
-
-    return db_df
+    try:
+        with engine.connect() as connection:
+            query = f"""
+                SELECT
+                TW.Twr_Kod AS [Kod],
+                TRIM(TW.Twr_KodDostawcy) AS [Kod_Dostawcy],
+                MAX(CASE WHEN TC.TwC_TwCNumer = 2 THEN TC.TwC_Wartosc END) AS [Cena_Cennikowa],
+                MAX(CASE WHEN TC.TwC_TwCNumer = {config.currency_id} THEN TC.TwC_Wartosc END) AS [{config.currency_name}]
+                FROM CDN.Towary TW
+                LEFT JOIN CDN.TwrCeny TC ON TW.Twr_TwrId = TC.TwC_TwrID
+                LEFT JOIN CDN.Kontrahenci K ON TW.Twr_KntId = K.Knt_KntId
+                WHERE K.Knt_Kod = '{config.supplier_code}' AND TW.Twr_KodDostawcy <> ''
+                GROUP BY TW.Twr_Kod, TW.Twr_KodDostawcy, K.Knt_Kod
+            """
+            db_df = pd.read_sql(query, connection)
+        return db_df
+    except Exception as e:
+        print(e)
+        return pd.DataFrame()
 

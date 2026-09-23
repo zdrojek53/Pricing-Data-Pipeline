@@ -5,14 +5,17 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-def run_pipeline(config_path: str | Path, excel_path: str):
+load_dotenv()
 
-    load_dotenv()
+def run_pipeline(config: YamlHandler, excel_path: str):
+
     
-    config = YamlHandler(config_path)
     handled_config = ConfigAdapter(config.data)
     
     db_df = fetch_db_data("siot", config)
+
+    if db_df.empty:
+        raise ConnectionError('Błąd połączenia z bazą danych.')
     
     excel_df = handled_config.extract(excel_path)
     excel_df = handled_config.transform(excel_df)
@@ -24,13 +27,15 @@ def run_pipeline(config_path: str | Path, excel_path: str):
         how='left'
     )
     
-    result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[config.currency_key[1]])
-                                /result_df[config.currency_key[1]].replace(0, float('nan')))
+    result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[config.currency_name])
+                                /result_df[config.currency_name].replace(0, float('nan')))
      
     result_df.to_excel('test.xlsx', index=False)
 
 
 if __name__ == '__main__':
-    run_pipeline(Path(__file__).resolve().parent / 'configs' / 'siot.yaml', 'pricing_files/cennik_siot.xlsx')
+    for cfg in Path('configs').glob('*.yaml'):
+        config = YamlHandler(cfg)
+        run_pipeline(config, config.file_path)
     
 

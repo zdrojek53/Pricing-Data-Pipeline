@@ -14,9 +14,12 @@ class YamlHandler:
         with open(config_path) as f:
             self.data = yaml.safe_load(f)
         try:
-            self.currency_key = self.CURRENCY_KEYS[self.data['currency']]
+            self.currency_id, self.currency_name = self.CURRENCY_KEYS[self.data['currency']]
+            self.supplier_code = self.data['supplier_code']
+            self.file_type = self.data['file_type']
+            self.file_path = self.data['file_path']
         except KeyError:
-            raise ValueError(f"Nieobsługiwana waluta w configu: {self.data.get('currency')}")
+            raise ValueError(f"Config {config_path} zawiera błędny klucz")
 
 
     
