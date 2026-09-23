@@ -5,12 +5,18 @@ class ConfigAdapter(MainAdapter):
 
     def __init__(self, yaml_data):
         self.yaml_data = yaml_data
-        print(yaml_data)
 
 
     def extract(self, path):
-        return (pd.read_excel(path, usecols=lambda col: col in self.yaml_data['column_mapping'])
-                .rename(columns=self.yaml_data['column_mapping']))
+        try:
+            return (pd.read_excel(
+                                path, header=self.yaml_data['header_row'],
+                                usecols=lambda col: col in self.yaml_data['column_mapping']
+                            )
+                    .rename(columns=self.yaml_data['column_mapping']))
+        except Exception as e:
+            print(e)
+            return pd.DataFrame()
     
 
     def transform(self, raw):
