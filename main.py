@@ -12,7 +12,7 @@ def run_pipeline(config: YamlHandler, excel_path: str):
     
     handled_config = ConfigAdapter(config.data)
     
-    db_df = fetch_db_data("siot", config)
+    db_df = fetch_db_data(config)
 
     if db_df.empty:
         raise ConnectionError('Błąd połączenia z bazą danych.')

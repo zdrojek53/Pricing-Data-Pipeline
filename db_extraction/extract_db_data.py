@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 
 
-def fetch_db_data(supplier_code: str, config) -> pd.DataFrame:
+def fetch_db_data(config) -> pd.DataFrame:
 
     connection_url = URL.create(
         'mssql+pyodbc',
@@ -25,15 +25,17 @@ def fetch_db_data(supplier_code: str, config) -> pd.DataFrame:
         with engine.connect() as connection:
             query = f"""
                 SELECT
-                TW.Twr_Kod AS [Kod],
-                TRIM(TW.Twr_KodDostawcy) AS [Kod_Dostawcy],
-                MAX(CASE WHEN TC.TwC_TwCNumer = 2 THEN TC.TwC_Wartosc END) AS [Cena_Cennikowa],
-                MAX(CASE WHEN TC.TwC_TwCNumer = {config.currency_id} THEN TC.TwC_Wartosc END) AS [{config.currency_name}]
-                FROM CDN.Towary TW
-                LEFT JOIN CDN.TwrCeny TC ON TW.Twr_TwrId = TC.TwC_TwrID
-                LEFT JOIN CDN.Kontrahenci K ON TW.Twr_KntId = K.Knt_KntId
-                WHERE K.Knt_Kod = '{config.supplier_code}' AND TW.Twr_KodDostawcy <> ''
-                GROUP BY TW.Twr_Kod, TW.Twr_KodDostawcy, K.Knt_Kod
+                TW.{os.getenv('DB_PRODUCT_CODE')} AS [Kod],
+                TRIM(TW.{os.getenv('DB_SUPPLIER_CODE')}) AS [Kod_Dostawcy],
+                MAX(CASE WHEN TC.{os.getenv('DB_PRICE_ID')} = 2 THEN TC.{os.getenv('DB_PRICE')} END) AS [Cena_Cennikowa],
+                MAX(CASE WHEN TC.{os.getenv('DB_PRICE_ID')} = {config.currency_id} THEN TC.{os.getenv('DB_PRICE')} END) AS [{config.currency_name}],
+                MAX(CASE WHEN TA.{os.getenv('DB_ATTR_ID')} = {os.getenv('DB_ATTR')} THEN TA.{os.getenv('DB_ATTR_TXT')} END) AS [Marza]
+                FROM {os.getenv('DB_PRODUCTS')} TW
+                LEFT JOIN {os.getenv('DB_PRICES')} TC ON TW.{os.getenv('DB_PRODUCT_ID')} = TC.{os.getenv('DB_PRICES_PRODUCT_ID')}
+                LEFT JOIN {os.getenv('DB_CLIENTS')} K ON TW.{os.getenv('DB_PRODUCTS_CLIENT_ID')} = K.{os.getenv('DB_CLIENT_ID')}
+                LEFT JOIN {os.getenv('DB_ATTRIBUTES')} TA ON TW.{os.getenv('DB_PRODUCT_ID')} = TA.{os.getenv('DB_ATTR_PRODUCT_ID')}
+                WHERE K.{os.getenv('DB_CLIENT_CODE')} = '{config.supplier_code}' AND TW.{os.getenv('DB_SUPPLIER_CODE')} <> ''
+                GROUP BY TW.{os.getenv('DB_PRODUCT_CODE')}, TW.{os.getenv('DB_SUPPLIER_CODE')}, K.{os.getenv('DB_CLIENT_CODE')}
             """
             db_df = pd.read_sql(query, connection)
         return db_df
