@@ -9,4 +9,5 @@ column_mapping:
   "": name_pricelist
   "": price_pricelist
 
-currency: 
+currency:
+exchange_rate:
