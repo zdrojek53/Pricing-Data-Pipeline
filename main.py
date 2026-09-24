@@ -30,11 +30,12 @@ def run_pipeline(config: YamlHandler, excel_path: str):
     result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[config.currency_name])
                                 /result_df[config.currency_name].replace(0, float('nan')))
      
-    result_df.to_excel('test.xlsx', index=False)
+    result_df.to_excel(f'test{handled_config.yaml_data['supplier_code']}.xlsx', index=False)
 
 
 if __name__ == '__main__':
     for cfg in Path('configs').glob('*.yaml'):
+        print(cfg)
         config = YamlHandler(cfg)
         run_pipeline(config, config.file_path)
     
