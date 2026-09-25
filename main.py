@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def run_pipeline(config: YamlHandler, excel_path: str):
+def run_pipeline(config: YamlHandler, excel_path: str) -> None:
 
     
     handled_config = ConfigAdapter(config.data)
