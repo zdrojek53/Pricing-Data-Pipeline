@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def run_pipeline(config: YamlHandler, excel_path: str) -> None:
 
     
@@ -29,6 +30,9 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
     
     result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[config.currency_name])
                                 /result_df[config.currency_name].replace(0, float('nan')))
+    result_df['price_pricelist'].fillna(0)
+    result_df['Marza'] = result_df['Marza'].str.replace(r'[PCUE%]', '', regex=True).astype(float)/100
+    result_df['new_price_PLN'] = round(result_df['price_pricelist'] * (1 + result_df['Marza']) * config.exchange, 2)
      
     result_df.to_excel(f'test{handled_config.yaml_data['supplier_code']}.xlsx', index=False)
 

@@ -18,6 +18,7 @@ class YamlHandler:
             self.supplier_code = self.data['supplier_code']
             self.file_type = self.data['file_type']
             self.file_path = self.data['file_path']
+            self.exchange = self.data['exchange_rate']
         except KeyError:
             raise ValueError(f"Config {config_path} zawiera błędny klucz")
 
