@@ -1,3 +1,5 @@
+import logging
+from logging_config import setup_logging
 from db_extraction.extract_db_data import fetch_db_data
 from adapters.ConfigAdapter import ConfigAdapter
 from YamlHandler import YamlHandler
@@ -6,10 +8,10 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 
 def run_pipeline(config: YamlHandler, excel_path: str) -> None:
-
     
     handled_config = ConfigAdapter(config.data)
     
@@ -38,9 +40,18 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
 
 
 if __name__ == '__main__':
+    setup_logging()
+    logger.info("Pipeline started")
+
     for cfg in Path('configs').glob('*.yaml'):
-        print(cfg)
+        logger.info("Pipeline %s started", cfg.name)
         config = YamlHandler(cfg)
-        run_pipeline(config, config.file_path)
+        try:
+            run_pipeline(config, config.file_path)
+        except Exception:
+            logger.exception("Pipeline %s failed", cfg.name)
+            raise
+        logger.info("Pipeline %s finished", cfg.name)
+    logger.info("Pipeline finished")
     
 
