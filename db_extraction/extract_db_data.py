@@ -43,7 +43,7 @@ def fetch_db_data(config) -> pd.DataFrame:
             db_df.rename(columns={'Cena_Waluta': config.currency_name}, inplace=True)
 
         return db_df
-    
+
     except Exception as e:
         print(e)
         return pd.DataFrame()

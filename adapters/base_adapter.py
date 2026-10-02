@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
-class MainAdapter(ABC):
+class BaseAdapter(ABC):
 
     @abstractmethod
     def extract(self, path: str) -> pd.DataFrame:
@@ -11,5 +11,4 @@ class MainAdapter(ABC):
     @abstractmethod
     def transform(self, raw: pd.DataFrame) -> pd.DataFrame:
         pass
-
 

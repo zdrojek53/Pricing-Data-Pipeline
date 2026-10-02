@@ -1,8 +1,8 @@
 import pandas as pd
 import logging
-from adapters.MainAdapter import MainAdapter
+from adapters.base_adapter import BaseAdapter
 
-class ConfigAdapter(MainAdapter):
+class ExcelAdapter(BaseAdapter):
 
     def __init__(self, yaml_data):
         self.yaml_data = yaml_data
@@ -21,7 +21,7 @@ class ConfigAdapter(MainAdapter):
         except Exception as e:
             self.logger.exception("Failed to load: %s", path)
             return pd.DataFrame()
-    
+
 
     def transform(self, raw):
         original_len = len(raw)
@@ -41,4 +41,3 @@ class ConfigAdapter(MainAdapter):
             self.logger.info("Dropped %d rows", dropped)
         return df
 
-    

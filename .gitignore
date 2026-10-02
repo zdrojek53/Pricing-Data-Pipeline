@@ -7,5 +7,12 @@ __pycache__/
 *.pyc
 *.xlsx
 *.yaml
+!configs/example.yaml
 logs/
 *.sql
+.pytest_cache/
+*.egg-info/
+dist/
+.vscode/
+.DS_Store
+

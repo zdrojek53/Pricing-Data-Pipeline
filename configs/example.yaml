@@ -4,6 +4,7 @@ file_path:
 sheet_name: 
 header_row: # starting from 0
 
+# on the left are column names in supplier's pricelist
 column_mapping:
   "": code_pricelist
   "": name_pricelist
