@@ -13,9 +13,9 @@ class ExcelAdapter(BaseAdapter):
         self.logger.info("Loading pricelist: %s", path)
         try:
             df = pd.read_excel(
-                                path, header=self.yaml_data['header_row'],
-                                usecols=lambda col: col in self.yaml_data['column_mapping']
-                            ).rename(columns=self.yaml_data['column_mapping'])
+                                path, header=self.yaml_data.header_row,
+                                usecols=lambda col: col in self.yaml_data.column_mapping
+                            ).rename(columns=self.yaml_data.column_mapping)
             self.logger.info("Loaded: %s", path)
             return df
         except Exception as e:

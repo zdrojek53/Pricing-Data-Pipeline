@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def run_pipeline(config: YamlHandler, excel_path: str) -> None:
 
-    handled_config = ExcelAdapter(config.data)
+    handled_config = ExcelAdapter(config.config)
 
     db_df = fetch_db_data(config)
 
@@ -36,7 +36,7 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
     result_df['Marza'] = result_df['Marza'].str.replace(r'[PCUE%]', '', regex=True).astype(float)/100
     result_df['new_price_PLN'] = round(result_df['price_pricelist'] * (1 + result_df['Marza']) * config.exchange, 2)
 
-    result_df.to_excel(f'test{handled_config.yaml_data['supplier_code']}.xlsx', index=False)
+    result_df.to_excel(f'test{handled_config.yaml_data.supplier_code}.xlsx', index=False)
 
 
 if __name__ == '__main__':
