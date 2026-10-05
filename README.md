@@ -1,10 +1,19 @@
-# Pricing Data Pipeline
-## Software that takes in pricing data in excel / pdf format and transforms it to be import-ready.
-It's a project that is supposed to take some hours off my coworkers and me, I started it from my own initiative.
+# Pricing Data Pipeline  
+Automatically transforms supplier pricelists into import-read form, reducing each pricelist import from 2 hours to a couple of minutes and import minimizing errors. Python 3.14.6
 
-**How it works**  
-    * The pipeline takes in an input excel file (adapters/ConfigAdapter.py) and sends a query to the database (db_extraction/extract_db_data.py)  
-    * Data extraction and transformation depend on a config file  
-    * Load process is performed in (main.py), it outputs correctly formatted .xlsx file  
+## The problem  
+Manual repricing took about 2 hours per supplier, with more than 20 suppliers it becomes a bit of problem. Doing it manually also meant human errors.
 
+## What it does  
+    * Pipeline takes multiple supplier pricelist and yaml configs.  
+    * Cleans up and transforms these pricelists.  
+    * Merges them with SQL Server data and compares.  
+    * Generates an import-ready file.  
+
+## Business rules  
+new_price = supplier_price x multiplier x (1 + margin) x exchange_rate  
+Duplicates are removed, unmatched products have their prices zeroed out, invalid prices need to be manually verified (per suspicious price difference).
+
+## Tech stack
+Python, pandas, SQLAlchemy/pyobdc, Pydantic
 

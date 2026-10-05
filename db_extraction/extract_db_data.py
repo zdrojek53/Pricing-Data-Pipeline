@@ -1,11 +1,14 @@
 import os
+import logging
 import pandas as pd
+from logging_config import setup_logging
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from pathlib import Path
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 SQL_PATH = BASE_DIR / 'queries' / 'fetch_products.sql'
@@ -46,6 +49,6 @@ def fetch_db_data(config) -> pd.DataFrame:
         return db_df
 
     except Exception as e:
-        print(e)
+        logger.exception("Failed to connect to db")
         return pd.DataFrame()
 

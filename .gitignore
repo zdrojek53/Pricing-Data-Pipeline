@@ -7,7 +7,6 @@ __pycache__/
 *.pyc
 *.xlsx
 *.yaml
-!configs/example.yaml
 logs/
 *.sql
 .pytest_cache/

@@ -14,7 +14,8 @@ class ExcelAdapter(BaseAdapter):
         try:
             df = pd.read_excel(
                                 path, header=self.yaml_data.header_row,
-                                usecols=lambda col: col in self.yaml_data.column_mapping
+                                usecols=lambda col: col in self.yaml_data.column_mapping,
+                                sheet_name=self.yaml_data.sheet_name
                             ).rename(columns=self.yaml_data.column_mapping)
             self.logger.info("Loaded: %s", path)
             return df
