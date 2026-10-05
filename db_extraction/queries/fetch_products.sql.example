@@ -1,0 +1,4 @@
+
+Expected SQL output:
+[Code] [Supplier_Code] [Main_Price] [Price_in_Currency] [Margin] [Factor]
+

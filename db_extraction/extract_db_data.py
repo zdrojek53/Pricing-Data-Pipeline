@@ -42,8 +42,8 @@ def fetch_db_data(config) -> pd.DataFrame:
         with engine.connect() as connection:
             db_df = pd.read_sql(text(query_str), connection, params=params)
 
-        if 'Cena_Waluta' in db_df.columns:
-            db_df.rename(columns={'Cena_Waluta': config.currency_name}, inplace=True)
+        if 'Price_in_Currency' in db_df.columns:
+            db_df.rename(columns={'Price_in_Currency': config.currency_name}, inplace=True)
 
         return db_df
 

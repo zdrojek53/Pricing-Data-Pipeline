@@ -25,16 +25,16 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
 
     result_df = db_df.merge(
         excel_df,
-        left_on='Kod_Dostawcy',
+        left_on='Supplier_Code',
         right_on='code_pricelist',
         how='left'
     )
 
-    result_df['price_pricelist'] = (result_df['price_pricelist'] * result_df['Mnoznik'].fillna(1).astype(float)).fillna(0)
+    result_df['price_pricelist'] = (result_df['price_pricelist'] * result_df['Factor'].fillna(1).astype(float)).fillna(0)
     result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[config.currency_name])
                                 /result_df[config.currency_name].replace(0, float('nan')))
-    result_df['Marza'] = result_df['Marza'].str.replace(r'[PCUE%]', '', regex=True).astype(float)/100
-    result_df['new_price_PLN'] = round(result_df['price_pricelist'] * (1 + result_df['Marza']) * config.exchange, 2).fillna(0)
+    result_df['Margin'] = result_df['Margin'].str.replace(r'[PCUE%]', '', regex=True).astype(float)/100
+    result_df['new_price_PLN'] = round(result_df['price_pricelist'] * (1 + result_df['Margin']) * config.exchange, 2).fillna(0)
 
     result_df.to_excel(f'test{handled_config.yaml_data.supplier_code}.xlsx', index=False)
 
