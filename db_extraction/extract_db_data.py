@@ -32,7 +32,8 @@ def fetch_db_data(config) -> pd.DataFrame:
     params = {
         'supplier_code': config.supplier_code,
         'currency_id': config.currency_id,
-        'attr_id': os.getenv('DB_ATTR', 1)
+        'margin_attr_id': os.getenv('DB_MARGIN_ATTR', 1),
+        'factor_attr_id': os.getenv('DB_FACTOR_ATTR', 1)
     }
 
     try:
