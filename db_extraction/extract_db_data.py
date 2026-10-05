@@ -1,7 +1,6 @@
 import os
 import logging
 import pandas as pd
-from logging_config import setup_logging
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
