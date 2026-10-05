@@ -7,7 +7,4 @@ It's a project that is supposed to take some hours off my coworkers and me, I st
     * Data extraction and transformation depend on a config file  
     * Load process is performed in (main.py), it outputs correctly formatted .xlsx file  
 
-**Future plans**  
-    * Implementing pdf scraping
-
 
