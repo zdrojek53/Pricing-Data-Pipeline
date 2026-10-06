@@ -2,10 +2,10 @@
 .idea/
 .venv/
 pricing_files/
+outputs/
 .env
 __pycache__/
 *.pyc
-*.xlsx
 *.yaml
 logs/
 *.sql

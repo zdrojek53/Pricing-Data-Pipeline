@@ -38,7 +38,7 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
     result_df['Margin'] = result_df['Margin'].str.replace(r'[PCUE%]', '', regex=True).astype(float)/100
     result_df['new_price_PLN'] = round(result_df['price_pricelist'] * (1 + result_df['Margin']) * config.exchange, 2).fillna(0)
 
-    result_df.to_excel(f'test{handled_config.yaml_data.supplier_code}.xlsx', index=False)
+    result_df.to_excel(f'outputs/{handled_config.yaml_data.supplier_code}_output.xlsx', index=False)
 
 
 if __name__ == '__main__':
