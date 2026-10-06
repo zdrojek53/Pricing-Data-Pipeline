@@ -33,6 +33,8 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
     result_df['price_pricelist'] = (result_df['price_pricelist'] * result_df['Factor'].fillna(1).astype(float)).fillna(0)
     result_df['price_diff'] = ((result_df['price_pricelist'] - result_df[config.currency_name])
                                 /result_df[config.currency_name].replace(0, float('nan')))
+    
+    # strips the margin column of PCUE% characters (Margins in our database are stored like: ex. C80% = CZK 80%)
     result_df['Margin'] = result_df['Margin'].str.replace(r'[PCUE%]', '', regex=True).astype(float)/100
     result_df['new_price_PLN'] = round(result_df['price_pricelist'] * (1 + result_df['Margin']) * config.exchange, 2).fillna(0)
 
@@ -50,7 +52,7 @@ if __name__ == '__main__':
             run_pipeline(config, config.file_path)
         except Exception:
             logger.exception("Pipeline %s failed", cfg.name)
-            raise
+            continue
         logger.info("Pipeline %s finished", cfg.name)
     logger.info("Pipeline finished")
 

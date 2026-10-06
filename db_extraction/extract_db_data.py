@@ -2,7 +2,7 @@ import os
 import logging
 import pandas as pd
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, exc
 from sqlalchemy.engine import URL
 from pathlib import Path
 
@@ -26,7 +26,7 @@ def fetch_db_data(config) -> pd.DataFrame:
         }
     )
 
-    engine = create_engine(connection_url)
+    engine = create_engine(connection_url, pool_pre_ping=True)
 
     with open(SQL_PATH, 'r', encoding='utf-8') as f:
         query_str = f.read()
@@ -47,7 +47,10 @@ def fetch_db_data(config) -> pd.DataFrame:
 
         return db_df
 
-    except Exception as e:
-        logger.exception("Failed to connect to db")
-        return pd.DataFrame()
+    except pd.errors.DatabaseError:
+        logger.exception("Invalid SQL query")
+        raise
+    except exc.DBAPIError:
+        logger.exception("Database connection error")
+        raise
 

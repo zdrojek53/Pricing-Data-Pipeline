@@ -19,9 +19,15 @@ class ExcelAdapter(BaseAdapter):
                             ).rename(columns=self.yaml_data.column_mapping)
             self.logger.info("Loaded: %s", path)
             return df
-        except Exception as e:
-            self.logger.exception("Failed to load: %s", path)
-            return pd.DataFrame()
+        except FileNotFoundError:
+            self.logger.exception("The file %s was not found. Verify the path.", path)
+            raise
+        except PermissionError:
+            self.logger.exception("Unable to access %s. Make sure it is not open.", path)
+            raise
+        except (pd.errors.EmptyDataError, pd.errors.ParserError):
+            self.logger.exception("Data on path %s is empty or corrupted.", path)
+            raise
 
 
     def transform(self, raw):
