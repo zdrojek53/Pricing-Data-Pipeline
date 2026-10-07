@@ -2,7 +2,7 @@
 .idea/
 .venv/
 pricing_files/
-outputs/
+outputs/*.xlsx
 .env
 __pycache__/
 *.pyc
