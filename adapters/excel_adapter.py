@@ -15,7 +15,8 @@ class ExcelAdapter(BaseAdapter):
             df = pd.read_excel(
                                 path, header=self.yaml_data.header_row,
                                 usecols=lambda col: col in self.yaml_data.column_mapping,
-                                sheet_name=self.yaml_data.sheet_name
+                                sheet_name=self.yaml_data.sheet_name,
+                                dtype={'code_pricelist': str}
                             ).rename(columns=self.yaml_data.column_mapping)
             self.logger.info("Loaded: %s", path)
             return df
@@ -27,6 +28,9 @@ class ExcelAdapter(BaseAdapter):
             raise
         except (pd.errors.EmptyDataError, pd.errors.ParserError):
             self.logger.exception("Data on path %s is empty or corrupted.", path)
+            raise
+        except KeyError:
+            self.logger.exception("Invalid YAML format")
             raise
 
 

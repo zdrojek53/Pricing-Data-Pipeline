@@ -18,7 +18,7 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
     db_df = fetch_db_data(config)
 
     if db_df.empty:
-        raise ConnectionError('Błąd połączenia z bazą danych.')
+        raise ConnectionError('Database connection error.')
 
     excel_df = handled_config.extract(excel_path)
     excel_df = handled_config.transform(excel_df)
@@ -47,8 +47,8 @@ if __name__ == '__main__':
 
     for cfg in Path('configs').glob('*.yaml'):
         logger.info("Pipeline %s started", cfg.name)
-        config = YamlHandler(cfg)
         try:
+            config = YamlHandler(cfg)
             run_pipeline(config, config.file_path)
         except Exception:
             logger.exception("Pipeline %s failed", cfg.name)
