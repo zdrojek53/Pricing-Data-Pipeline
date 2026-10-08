@@ -19,7 +19,7 @@ def run_pipeline(config: YamlHandler, excel_path: str) -> None:
     db_df = fetch_db_data(config)
 
     if db_df.empty:
-        raise ConnectionError('Database connection error.')
+        raise ConnectionError('SQL query result is empty.')
 
     excel_df = handled_config.extract(excel_path)
     excel_df = handled_config.transform(excel_df)

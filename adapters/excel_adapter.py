@@ -9,12 +9,23 @@ class ExcelAdapter(BaseAdapter):
         self.logger = logging.getLogger(__name__)
 
 
+    def column_mapping(self, col) -> bool:
+        try:
+            is_mapped = col in self.yaml_data.column_mapping
+            if not is_mapped:
+                self.logger.info("Column %s was skipped.", col)
+            return is_mapped
+        except Exception:
+            self.logger.exception("Failed evaluating column %s, check YAML config", col)
+            return False
+
+
     def extract(self, path):
         self.logger.info("Loading pricelist: %s", path)
         try:
             df = pd.read_excel(
                                 path, header=self.yaml_data.header_row,
-                                usecols=lambda col: col in self.yaml_data.column_mapping,
+                                usecols=self.column_mapping,
                                 sheet_name=self.yaml_data.sheet_name,
                                 dtype={'code_pricelist': str}
                             ).rename(columns=self.yaml_data.column_mapping)
