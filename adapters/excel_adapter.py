@@ -35,20 +35,24 @@ class ExcelAdapter(BaseAdapter):
 
 
     def transform(self, raw):
-        original_len = len(raw)
-        df = (
-            raw.assign(
-                code_pricelist = lambda x: x['code_pricelist'].astype('str').str.strip(),
-                price_pricelist = lambda x: pd.to_numeric(
-                    x['price_pricelist'], errors='coerce'
+        try:
+            original_len = len(raw)
+            df = (
+                raw.assign(
+                    code_pricelist = lambda x: x['code_pricelist'].astype('str').str.strip(),
+                    price_pricelist = lambda x: pd.to_numeric(
+                        x['price_pricelist'], errors='coerce'
+                    )
                 )
+                .dropna(subset=['code_pricelist'])
+                .fillna({'price_pricelist': 0.0})
+                .drop_duplicates(subset=['code_pricelist'])
             )
-            .dropna(subset=['code_pricelist'])
-            .fillna({'price_pricelist': 0.0})
-            .drop_duplicates(subset=['code_pricelist'])
-        )
-        dropped = original_len - len(df)
-        if dropped:
-            self.logger.info("Dropped %d rows", dropped)
-        return df
+            dropped = original_len - len(df)
+            if dropped:
+                self.logger.info("Dropped %d rows", dropped)
+            return df
+        except KeyError:
+            self.logger.exception("Wrong column mapping in YAML")
+            raise
 
