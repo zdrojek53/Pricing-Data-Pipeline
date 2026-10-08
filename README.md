@@ -3,7 +3,7 @@ Automatically transforms supplier pricelists into import-ready form, reducing ea
 Python version: *Python 3.14.6*
 
 ## The problem  
-Manual repricing took about 2 hours per supplier, with more than 20 suppliers it becomes a bit of a problem. Doing it manually also meant human errors.
+Manual repricing took about 2 hours per supplier, with more than 20 suppliers it becomes a problem. Doing it manually also meant human errors.
 
 ## What it does  
 * Pipeline takes multiple supplier pricelist and yaml configs.  
