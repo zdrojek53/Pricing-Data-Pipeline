@@ -12,10 +12,10 @@ Manual repricing took about 2 hours per supplier, with more than 20 suppliers it
 * Generates an import-ready file.  
 
 ## Business rules  
-new_price = supplier_price x multiplier x (1 + margin) x exchange_rate  
+new_price = supplier_price x (1 + margin) x exchange_rate  
 Duplicates are removed, unmatched products have their prices zeroed out, invalid prices need to be manually verified (per suspicious price difference).
 Prices are also calculated with 'Factor' taken into account (it's a direct relation of units in our ERP to units in supplier pricelist).
 
 ## Tech stack
-Python, pandas, SQLAlchemy/pyobdc, Pydantic
+Python, pandas, SQLAlchemy/pyodbc, Pydantic
 

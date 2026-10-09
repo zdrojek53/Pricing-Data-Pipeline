@@ -37,7 +37,7 @@ class ExcelAdapter(BaseAdapter):
         except PermissionError:
             self.logger.exception("Unable to access %s. Make sure it is not open.", path)
             raise
-        except (pd.errors.EmptyDataError, pd.errors.ParserError):
+        except ValueError:
             self.logger.exception("Data on path %s is empty or corrupted.", path)
             raise
         except KeyError:

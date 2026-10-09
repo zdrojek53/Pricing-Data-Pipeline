@@ -1,4 +1,5 @@
 import logging
+import pandas as pd
 from logging_config import setup_logging
 
 
@@ -6,16 +7,21 @@ logger = logging.getLogger(__name__)
 setup_logging()
 
 
-def parse_margin(margin_column, config):
+def parse_margin(margin_column: pd.Series, config) -> pd.Series:
     """
     strips the margin column of PCUE% characters
-    Margins in our database are stored like: ex. C80% = CZK 80%
+    Margins in the database are stored like: ex. C80% = CZK 80%
     """
+
     try:
-        margin_column = margin_column.astype(str).str.replace(r'[PCUE%]', '', regex=True)
-        return margin_column.fillna(0).astype(float)/100
+        margin_column = (margin_column.astype("string")
+                         .str.replace(r'[PCUE%]', '', regex=True)
+                         .str.replace(",", ".", regex=True))
+        return pd.to_numeric(margin_column, errors="coerce").fillna(0)/100
+    
     except ValueError:
         logger.exception("Invalid margin values in database for %s.", config.name)
+        raise
 
 
 
